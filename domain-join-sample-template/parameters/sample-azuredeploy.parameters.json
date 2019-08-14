@@ -1,0 +1,25 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "domainJoinUserName": {
+            "reference": {
+                "keyVault": {
+                "id": "/subscriptions/64e33c0f-736c-4cb7-b4bc-58b7eb76fa94/resourceGroups/rg-aadds-domainjoin/providers/Microsoft.KeyVault/vaults/kv-aadds-1"
+                },
+                "secretName": "aadds-domain-join-user-id"
+            }
+        },
+        "domainJoinUserPassword": {
+            "reference": {
+                "keyVault": {
+                "id": "/subscriptions/64e33c0f-736c-4cb7-b4bc-58b7eb76fa94/resourceGroups/rg-aadds-domainjoin/providers/Microsoft.KeyVault/vaults/kv-aadds-1"
+                },
+                "secretName": "aadds-domain-join-user-password"
+            }
+        },
+        "domainFQDN": {
+            "value": "taoyang.cloud"
+        }
+    }
+}

@@ -1,0 +1,1 @@
+# Azure AD DS Domain Join Sample Pattern

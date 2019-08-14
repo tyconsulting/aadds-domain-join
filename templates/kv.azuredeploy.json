@@ -1,0 +1,77 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "ResourcePartialName": {
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 18,
+        "metadata": {
+          "description": "The partial name of various resources defined in this template."
+        },
+        "defaultValue": "aadds-domain-join"
+      },
+      "resourceIteration": {
+        "type": "string",
+        "metadata": {
+          "description": "Enter the Iteration of resources. Names of some resources such as Key Vaults and storage accounts need to be unique. Test resources that were recently deleted can not be resused for sometime"
+        },
+        "defaultValue": "0"
+      },
+      "AADApplicationSPObjectId": {
+        "type": "string",
+        "minLength": 36,
+        "maxLength": 36,
+        "metadata": {
+          "description": "The Object ID of the Azure AD application Service Principal."
+        }
+      }
+    },
+    "variables": {
+        "kvName": "[concat('kv-', parameters('ResourcePartialName'), '-',  parameters('resourceIteration'))]",
+        "apiversion": "2018-02-14"
+    },
+    "resources": [
+      {
+        "name": "[variables('kvName')]",
+        "type": "Microsoft.KeyVault/vaults",
+        "apiVersion": "[variables('apiversion')]",
+        "dependsOn": [],
+        "location": "[resourcegroup().location]",
+        "tags": {},
+        "properties": {
+          "sku": {
+            "family": "A",
+            "name": "standard"
+          },
+          "tenantId": "[subscription().tenantId]",
+          "accessPolicies": [
+            {
+              "tenantId": "[subscription().tenantId]",
+              "objectId": "[parameters('AADApplicationSPObjectId')]",
+              "permissions": {
+                "secrets": [
+                  "all"
+                ]
+              }
+            }
+          ],
+          "enabledForDeployment": false,
+          "enabledForTemplateDeployment": true,
+          "enableSoftDelete": true
+        },
+        "resources": []
+      }
+    ],
+    "outputs": {
+      "keyVaultName": {
+        "type": "string",
+        "value": "[variables('kvName')]"
+      },
+      "keyVaultUri": {
+        "type": "string",
+        "value": "[reference(variables('kvName')).vaultUri]"
+      }
+    }
+  }
+  
